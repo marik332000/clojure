@@ -6509,13 +6509,15 @@
   {:added "1.2"
    :static true}
   [coll]
-  (loop [coll coll, n 1, selected nil]
-    (if (empty? coll)
-      selected
-      (recur (rest coll) (inc n)
-             (if (< (rand) (/ 1.0 n))
-               (first coll)
-               selected)))))
+  (cond (empty? coll) (throw (IndexOutOfBoundsException.))
+        (counted? coll) (nth coll (rand-int (count coll)))
+        :else (loop [coll coll, n 1, selected nil]
+                (if (empty? coll)
+                  selected
+                  (recur (rest coll) (inc n)
+                         (if (< (rand) (/ 1.0 n))
+                           (first coll)
+                     selected)))))))
 
 (defn partition-all
   "Returns a lazy sequence of lists like partition, but may include
