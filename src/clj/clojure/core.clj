@@ -6505,11 +6505,17 @@
 (defn rand-nth
   "Return a random element of the (sequential) collection. Will have
   the same performance characteristics as nth for the given
-  collection."
+  collection. Does not retain the head of the sequence."
   {:added "1.2"
    :static true}
   [coll]
-  (nth coll (rand-int (count coll))))
+  (loop [coll coll, n 1, selected nil]
+    (if (empty? coll)
+      selected
+      (recur (rest coll) (inc n)
+             (if (< (rand) (/ 1.0 n))
+               (first coll)
+               selected)))))
 
 (defn partition-all
   "Returns a lazy sequence of lists like partition, but may include
